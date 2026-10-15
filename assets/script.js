@@ -83,11 +83,18 @@ map.addEventListener('pointerup',()=>active=null);
 
 map.addEventListener("pointercancel",()=>active=null);
 
-// Shuffle positions within a spaced grid so words stay inside the map.
+// Recompose the map as a loose constellation, avoiding a fixed two-column layout.
 let animation = null;
 function rearrange(){
   if (document.hidden || active || animation) return;
-  const slots = Array.from({length:10},(_,i)=>({x:24+(i%2)*52+(Math.random()-.5)*8,y:10+Math.floor(i/2)*20+(Math.random()-.5)*4}));
+  const constellation = [
+    {x:10,y:14},{x:37,y:8},{x:68,y:16},{x:88,y:31},{x:23,y:36},
+    {x:53,y:42},{x:12,y:62},{x:41,y:68},{x:73,y:61},{x:31,y:86}
+  ];
+  const slots = constellation.map(slot => ({
+    x:Math.max(7,Math.min(93,slot.x+(Math.random()-.5)*10)),
+    y:Math.max(7,Math.min(93,slot.y+(Math.random()-.5)*12))
+  }));
   for(let i=slots.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[slots[i],slots[j]]=[slots[j],slots[i]];}
   const from=nodes.map(n=>({x:Number(n.dataset.x),y:Number(n.dataset.y)}));
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
