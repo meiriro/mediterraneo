@@ -130,3 +130,47 @@ if(questionList) questionBlocks.forEach((block,index)=>{
   });
   section.append(heading,list);questionList.append(section);
 });
+
+
+// CALENDARIO_MENSUAL
+(() => {
+  const grid = document.querySelector('#month-grid');
+  if (!grid) return;
+  const title = document.querySelector('#month-title');
+  const events = [
+    {date:'2026-10-16',time:'09:00',title:'Plogging Congress',href:'plogging.html',kind:'past'},
+    {date:'2026-10-17',time:'10:00',title:'Recogida Nova Icària',href:'anellides.html',kind:'past'},
+    {date:'2026-10-19',time:'Por confirmar',title:'Reunión NextReef',href:'nextreef.html',kind:'task'},
+    {date:'2026-10-19',time:'Tarea',title:'Pedir acceso OPP-91',href:'palamos.html',kind:'task'},
+    {date:'2026-10-20',time:'10:00',title:'Jordi · Gremio',href:'gremio.html'},
+    {date:'2026-10-20',time:'Último día',title:'Exposición Thalassa',href:'thalassa.html'},
+    {date:'2026-10-29',time:'09–12 h',title:'Caballitos de mar',href:'anellides.html'},
+    {date:'2026-10-31',time:'10–12 h',title:'Limpieza Anèl·lides',href:'anellides.html'},
+    {date:'2026-11-26',time:'09–12 h',title:'Caballitos de mar',href:'anellides.html'},
+    {date:'2026-12-30',time:'09–12 h',title:'Caballitos de mar',href:'anellides.html'}
+  ];
+  const names = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  let shown = new Date(2026, 9, 1);
+  const key = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  function render(){
+    title.textContent = `${names[shown.getMonth()]} ${shown.getFullYear()}`;
+    grid.innerHTML = '';
+    const first = new Date(shown.getFullYear(), shown.getMonth(), 1);
+    const offset = (first.getDay()+6)%7;
+    const start = new Date(first); start.setDate(1-offset);
+    for(let i=0;i<42;i++){
+      const d = new Date(start); d.setDate(start.getDate()+i);
+      const cell = document.createElement('div');
+      cell.className = 'month-day' + (d.getMonth()!==shown.getMonth() ? ' month-day--outside' : '');
+      cell.innerHTML = `<span class="month-day__number">${d.getDate()}</span>`;
+      events.filter(e=>e.date===key(d)).forEach(e=>{
+        const a=document.createElement('a'); a.href=e.href; a.className='month-event'+(e.kind?` month-event--${e.kind}`:'');
+        a.innerHTML=`<time>${e.time}</time>${e.title}`; cell.appendChild(a);
+      });
+      grid.appendChild(cell);
+    }
+  }
+  document.querySelector('#prev-month').addEventListener('click',()=>{shown=new Date(shown.getFullYear(),shown.getMonth()-1,1);render()});
+  document.querySelector('#next-month').addEventListener('click',()=>{shown=new Date(shown.getFullYear(),shown.getMonth()+1,1);render()});
+  render();
+})();
