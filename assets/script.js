@@ -222,7 +222,7 @@ if(questionList) questionBlocks.forEach((block,index)=>{
     {date:'2026-10-19',time:'Por confirmar',title:'Reunión NextReef',href:'nextreef.html',kind:'task'},
     {date:'2026-10-19',time:'Tarea',title:'Pedir acceso OPP-91',href:'palamos.html',kind:'task'},
     {date:'2026-10-20',time:'10:00',title:'Jordi · Gremio',href:'gremio.html'},
-    {date:'2026-10-20',time:'18:00',title:'Gemma · Slowfish',href:'slowfish.html'},
+    {date:'2026-10-20',time:'17:30',title:'Gemma · Slowfish',href:'slowfish.html'},
     {date:'2026-10-20',time:'Último día',title:'Exposición Thalassa',href:'thalassa.html'},
     {date:'2026-10-29',time:'09–12 h',title:'Caballitos de mar',href:'anellides.html'},
     {date:'2026-10-31',time:'10–12 h',title:'Limpieza Anèl·lides',href:'anellides.html'},
