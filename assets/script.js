@@ -132,6 +132,85 @@ if(questionList) questionBlocks.forEach((block,index)=>{
 });
 
 
+// VISOR_DE_IMAGENES
+(() => {
+  const galleryImages = [...document.querySelectorAll('.detail-gallery img')];
+  if (!galleryImages.length) return;
+
+  const viewer = document.createElement('div');
+  viewer.className = 'image-lightbox';
+  viewer.setAttribute('role', 'dialog');
+  viewer.setAttribute('aria-modal', 'true');
+  viewer.setAttribute('aria-label', 'Visor de imágenes');
+  viewer.innerHTML = `
+    <button class="image-lightbox__close" type="button" aria-label="Cerrar visor">Cerrar</button>
+    <button class="image-lightbox__prev" type="button" aria-label="Imagen anterior">Anterior</button>
+    <figure class="image-lightbox__figure">
+      <img class="image-lightbox__image" alt="">
+      <figcaption class="image-lightbox__caption"></figcaption>
+    </figure>
+    <button class="image-lightbox__next" type="button" aria-label="Imagen siguiente">Siguiente</button>
+    <span class="image-lightbox__count" aria-live="polite"></span>`;
+  document.body.appendChild(viewer);
+
+  const fullImage = viewer.querySelector('.image-lightbox__image');
+  const caption = viewer.querySelector('.image-lightbox__caption');
+  const count = viewer.querySelector('.image-lightbox__count');
+  const closeButton = viewer.querySelector('.image-lightbox__close');
+  let current = 0;
+  let trigger = null;
+
+  function show(index) {
+    current = (index + galleryImages.length) % galleryImages.length;
+    const image = galleryImages[current];
+    const text = image.closest('figure')?.querySelector('figcaption')?.textContent?.trim() || image.alt;
+    fullImage.src = image.currentSrc || image.src;
+    fullImage.alt = image.alt;
+    caption.textContent = text;
+    caption.hidden = !text;
+    count.textContent = `${current + 1} / ${galleryImages.length}`;
+  }
+
+  function open(index, image) {
+    trigger = image;
+    show(index);
+    viewer.classList.add('is-open');
+    document.body.classList.add('lightbox-open');
+    closeButton.focus();
+  }
+
+  function close() {
+    viewer.classList.remove('is-open');
+    document.body.classList.remove('lightbox-open');
+    trigger?.focus();
+  }
+
+  galleryImages.forEach((image, index) => {
+    image.tabIndex = 0;
+    image.setAttribute('role', 'button');
+    image.setAttribute('aria-label', `Ampliar imagen ${index + 1} de ${galleryImages.length}`);
+    image.addEventListener('click', () => open(index, image));
+    image.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        open(index, image);
+      }
+    });
+  });
+
+  closeButton.addEventListener('click', close);
+  viewer.querySelector('.image-lightbox__prev').addEventListener('click', () => show(current - 1));
+  viewer.querySelector('.image-lightbox__next').addEventListener('click', () => show(current + 1));
+  viewer.addEventListener('click', event => { if (event.target === viewer) close(); });
+  document.addEventListener('keydown', event => {
+    if (!viewer.classList.contains('is-open')) return;
+    if (event.key === 'Escape') close();
+    if (event.key === 'ArrowLeft') show(current - 1);
+    if (event.key === 'ArrowRight') show(current + 1);
+  });
+})();
+
+
 // CALENDARIO_MENSUAL
 (() => {
   const grid = document.querySelector('#month-grid');
